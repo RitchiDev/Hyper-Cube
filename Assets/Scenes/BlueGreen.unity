@@ -10361,7 +10361,7 @@ MonoBehaviour:
   m_PlayerPrefab: {fileID: 1917823218781264411, guid: 0436efd29f0e1f4429915343331a7d02, type: 3}
   m_BoostAmount: 10
   m_BoostTargetOffset: {x: 0, y: 4, z: 0}
-  m_BoostLerp: 0.3
+  m_BoostSpeed: 3
   m_MaxPlatformsBeforeShrink: 10
   m_MaxPlatformSpeed: 22
   m_StartPlatformSpeed: 6

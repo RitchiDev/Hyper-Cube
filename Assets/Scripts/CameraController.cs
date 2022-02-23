@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float m_MoveSpeed = 3f;
     [SerializeField] private float m_LerpTime = 0.075f;
 
+    private bool m_IsBoosting;
+
     private Transform m_NewTarget;
     private Transform m_OldTarget;
     private Vector3 m_CameraOffset;
@@ -35,7 +37,7 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        if(transform.position.y >= (m_NewTarget.position.y + m_CameraOffset.y) - 0.1f)
+        if (transform.position.y >= (m_NewTarget.position.y + m_CameraOffset.y) - 0.1f)
         {
             transform.position = transform.position + Vector3.up * Time.deltaTime * m_MoveSpeed;
         }

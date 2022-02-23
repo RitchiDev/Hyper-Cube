@@ -17,8 +17,13 @@ public class DestroyZone : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 playerPos = m_Target.transform.position;
-        transform.position = playerPos + m_Offset;
+        if(GameManager.Instance.PlayerIsBoosting)
+        {
+            return;
+        }
+
+        Vector3 targetPos = m_Target.transform.position;
+        transform.position = targetPos + m_Offset;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

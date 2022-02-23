@@ -13,10 +13,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerController m_PlayerPrefab;
     [SerializeField] private int m_BoostAmount = 20;
     [SerializeField] private Vector3 m_BoostTargetOffset;
-    [SerializeField] private float m_BoostLerp = 0.3f;
+    [SerializeField] private float m_BoostSpeed = 0.3f;
+    private float m_BoostTime;
+    public float BoostSpeed => m_BoostSpeed;
+
     private PlayerController m_Player;
-    private bool m_DoBoost;
     private Transform m_BoostTarget;
+    private bool m_IsBoosting;
+    public bool PlayerIsBoosting => m_IsBoosting;
 
     [SerializeField] private int m_MaxPlatformsBeforeShrink = 30;
     [SerializeField] private float m_MaxPlatformSpeed = 10f;
@@ -49,33 +53,42 @@ public class GameManager : MonoBehaviour
         m_NewSpeed = m_StartPlatformSpeed;
 
         m_Player = Instantiate(m_PlayerPrefab, m_SpawnPosition, m_PlayerPrefab.transform.rotation);
-
     }
 
     private void Update()
     {
-        if(m_DoBoost)
+        if(m_IsBoosting)
         {
+            float progress = (Time.time - m_BoostTime) / m_BoostSpeed;
             Vector3 desiredPosition = m_BoostTarget.position + m_BoostTargetOffset;
-            //desiredPosition.x = transform.position.x;
-            //desiredPosition.z = transform.position.z;
+            m_Player.transform.position = Vector3.Lerp(m_Player.transform.position, desiredPosition, Mathf.Clamp01(progress));
 
-            Vector3 smoothedPosition = Vector3.Lerp(m_Player.transform.position, desiredPosition, m_BoostLerp);
-            m_Player.transform.position = smoothedPosition;
-
-            if (m_Player.transform.position.y >= (m_BoostTarget.position.y + m_BoostTargetOffset.y) - 1f)
+            Debug.Log(progress);
+            if (progress >= 1)
             {
-                m_DoBoost = false;
-                CameraController.Instance.SetNewTarget(m_BoostTarget);
-                m_Player.gameObject.GetComponent<Collider2D>().enabled = true;
+                //m_BoostTime = Time.time;
+                m_IsBoosting = false;
                 m_Player.enabled = true;
+                m_Player.gameObject.GetComponent<Collider2D>().enabled = true;
+
+                CameraController.Instance.SetNewTarget(m_BoostTarget);
             }
+
+            //if (m_Player.transform.position.y >= (m_BoostTarget.position.y + m_BoostTargetOffset.y) - 1f)
+            //{
+            //    m_IsBoosting = false;
+            //    CameraController.Instance.SetNewTarget(m_BoostTarget);
+            //    m_Player.gameObject.GetComponent<Collider2D>().enabled = true;
+            //    m_Player.enabled = true;
+            //}
         }
     }
 
     public void Boost()
     {
-        m_DoBoost = true;
+        m_IsBoosting = true;
+        m_BoostTime = Time.time;
+        CameraController.Instance.SetNewTarget(m_Player.transform);
 
         if (m_Player.enabled)
         {
@@ -121,10 +134,8 @@ public class GameManager : MonoBehaviour
         if(boostTarget)
         {
             Platform platform = SpawnManager.Instance.InstantiatePlatform();
-            //platform.SetUp(false);
             platform.SetUp(GetNewSize(), GetNewSpeed(), doMove);
             m_BoostTarget = platform.transform;
-            //m_BoostTarget.position = new Vector2(0, m_BoostTarget.transform.position.y + m_BoostTargetOffset);
 
             return;
         }
