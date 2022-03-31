@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BoostItem : Item
 {
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         PlayerController player = collision.GetComponent<PlayerController>();

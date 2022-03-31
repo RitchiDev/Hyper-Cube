@@ -9,13 +9,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    [SerializeField] private Camera m_Camera;
     [SerializeField] private PlayerController m_PlayerPrefab;
     [SerializeField] private int m_BoostAmount = 20;
     [SerializeField] private Vector3 m_BoostTargetOffset;
-    [SerializeField] private float m_BoostSpeed = 0.3f;
-    private float m_BoostTime;
-    public float BoostSpeed => m_BoostSpeed;
 
     private PlayerController m_Player;
     private Transform m_BoostTarget;
@@ -55,46 +51,17 @@ public class GameManager : MonoBehaviour
         m_Player = Instantiate(m_PlayerPrefab, m_SpawnPosition, m_PlayerPrefab.transform.rotation);
     }
 
-    private void Update()
-    {
-        if(m_IsBoosting)
-        {
-            float progress = (Time.time - m_BoostTime) / m_BoostSpeed;
-            Vector3 desiredPosition = m_BoostTarget.position + m_BoostTargetOffset;
-            m_Player.transform.position = Vector3.Lerp(m_Player.transform.position, desiredPosition, Mathf.Clamp01(progress));
-
-            Debug.Log(progress);
-            if (progress >= 1)
-            {
-                //m_BoostTime = Time.time;
-                m_IsBoosting = false;
-                m_Player.enabled = true;
-                m_Player.gameObject.GetComponent<Collider2D>().enabled = true;
-
-                CameraController.Instance.SetNewTarget(m_BoostTarget);
-            }
-
-            //if (m_Player.transform.position.y >= (m_BoostTarget.position.y + m_BoostTargetOffset.y) - 1f)
-            //{
-            //    m_IsBoosting = false;
-            //    CameraController.Instance.SetNewTarget(m_BoostTarget);
-            //    m_Player.gameObject.GetComponent<Collider2D>().enabled = true;
-            //    m_Player.enabled = true;
-            //}
-        }
-    }
-
     public void Boost()
     {
+        Debug.Log("Boost");
+
         m_IsBoosting = true;
-        m_BoostTime = Time.time;
-        CameraController.Instance.SetNewTarget(m_Player.transform);
 
         if (m_Player.enabled)
         {
             m_Player.enabled = false;
             m_Player.Rigidbody.velocity = Vector2.zero;
-            m_Player.gameObject.GetComponent<Collider2D>().enabled = false;
+            m_Player.Collider.enabled = false;
         }
 
         Platform[] platforms = FindObjectsOfType<Platform>();
@@ -106,18 +73,48 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < m_BoostAmount; i++)
         {
             ScoreManager.Instance.AddScore(1);
-            if (i >= m_BoostAmount - 1)
+            if (i >= m_BoostAmount - 2)
             {
                 //Debug.Log(i);
                 SpawnPlatform(false, true);
                 SpawnPlatform(true);
 
-                return;
+                //continue;
             }
-
-            SpawnPlatform(false);
-
+            else
+            {
+                SpawnPlatform(false);
+            }
         }
+
+        StartCoroutine(BoostCoroutine());
+    }
+
+    private IEnumerator BoostCoroutine()
+    {
+        Vector3 desiredPosition = m_BoostTarget.position + m_BoostTargetOffset;
+
+        Debug.Log(desiredPosition);
+
+        float elapsedTime = 0;
+
+
+        while (elapsedTime < m_BoostAmount)
+        {
+            //Debug.Log(elapsedTime);
+            m_Player.transform.position = Vector3.Lerp(m_Player.transform.position, desiredPosition, (elapsedTime / m_BoostAmount));
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        m_Player.transform.position = desiredPosition;
+
+        CameraController.Instance.SetNewTarget(m_Player.transform, false, true);
+
+        m_IsBoosting = false;
+        m_Player.enabled = true;
+        m_Player.Collider.enabled = true;
     }
 
     public void SpawnPlatform(bool doMove = true, bool boostTarget = false)

@@ -9,8 +9,9 @@ public class CameraController : MonoBehaviour
     public static CameraController Instance { get; private set; }
 
     [SerializeField] private float m_MoveSpeed = 3f;
-    [SerializeField] private float m_LerpTime = 0.075f;
-
+    [SerializeField] private float m_LerpTime = 5f;
+    [SerializeField] private float m_FollowPlayerLerpTime = 1f;
+    private float m_CurrentLerpTime;
     private bool m_IsBoosting;
 
     private Transform m_NewTarget;
@@ -46,13 +47,15 @@ public class CameraController : MonoBehaviour
             Vector3 desiredPosition = m_NewTarget.position + m_CameraOffset;
             desiredPosition.x = transform.position.x;
             desiredPosition.z = transform.position.z;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, m_LerpTime);
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, m_LerpTime * Time.deltaTime);
             transform.position = smoothedPosition;
         }
     }
 
-    public void SetNewTarget(Transform target, bool firstTarget = false)
+    public void SetNewTarget(Transform target, bool firstTarget = false, bool isPlayer = false)
     {
+        m_CurrentLerpTime = isPlayer ? m_FollowPlayerLerpTime : m_LerpTime;
+
         //Debug.Log("Set New Target");
         m_OldTarget = m_NewTarget;
         m_NewTarget = target;

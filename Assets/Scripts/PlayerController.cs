@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -26,6 +25,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D m_Rigidbody;
     public Rigidbody2D Rigidbody => m_Rigidbody;
 
+    private Collider2D m_Collider;
+    public Collider2D Collider => m_Collider;
+
     private Platform m_PreviousPlatform;
     private Platform m_CurrentPlatform;
 
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_Collider = GetComponent<Collider2D>();
     }
 
     private void Start()
@@ -257,6 +260,7 @@ public class PlayerController : MonoBehaviour
                         Instantiate(m_LineEffect, effectSpawnPosition, m_LineEffect.transform.rotation);
                         m_PressedPound = false;
                     }
+
 
                     //Debug.Log("On Platform");
                     m_Rigidbody.velocity = Vector2.zero;

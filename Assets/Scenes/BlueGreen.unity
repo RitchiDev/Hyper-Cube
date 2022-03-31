@@ -10357,11 +10357,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04788e6ab1e3984fa0851116f65b707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Camera: {fileID: 963194227}
   m_PlayerPrefab: {fileID: 1917823218781264411, guid: 0436efd29f0e1f4429915343331a7d02, type: 3}
   m_BoostAmount: 10
   m_BoostTargetOffset: {x: 0, y: 4, z: 0}
-  m_BoostSpeed: 3
   m_MaxPlatformsBeforeShrink: 10
   m_MaxPlatformSpeed: 22
   m_StartPlatformSpeed: 6
@@ -15765,7 +15763,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MoveSpeed: 1.1
-  m_LerpTime: 0.075
+  m_LerpTime: 5
+  m_FollowPlayerLerpTime: 15
 --- !u!1 &1047062335
 GameObject:
   m_ObjectHideFlags: 0
@@ -16225,7 +16224,7 @@ Transform:
   m_GameObject: {fileID: 1707771159}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 40, z: 1}
+  m_LocalScale: {x: 1, y: 300, z: 1}
   m_Children: []
   m_Father: {fileID: 1821656208}
   m_RootOrder: 0
@@ -16862,7 +16861,7 @@ Transform:
   m_GameObject: {fileID: 2006360687}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 40, z: 1}
+  m_LocalScale: {x: 1, y: 300, z: 1}
   m_Children: []
   m_Father: {fileID: 1821656208}
   m_RootOrder: 1

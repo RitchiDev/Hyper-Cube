@@ -157,6 +157,7 @@ public class Platform : MonoBehaviour
     {
         return Random.Range(-1f, 1f);
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.GetComponent<Wall>())
